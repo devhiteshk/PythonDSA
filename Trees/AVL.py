@@ -1,7 +1,7 @@
-#   Created by Elshad Karimov 
+#   Created by Elshad Karimov
 #   Copyright © 2021 AppMillers. All rights reserved.
 
-import QueueLinkedList as queue
+from collections import deque
 
 
 class AVLNode:
@@ -40,15 +40,15 @@ def levelOrderTraversal(rootNode):
     if not rootNode:
         return
     else:
-        customQueue = queue.Queue()
-        customQueue.enqueue(rootNode)
-        while not (customQueue.isEmpty()):
-            root = customQueue.dequeue()
-            print(root.value.data)
-            if root.value.leftChild is not None:
-                customQueue.enqueue(root.value.leftChild)
-            if root.value.rightChild is not None:
-                customQueue.enqueue(root.value.rightChild)
+        customQueue = deque([rootNode])
+
+        while customQueue:
+            root = customQueue.popleft()
+            print(root.data)
+            if root.leftChild is not None:
+                customQueue.append(root.leftChild)
+            if root.rightChild is not None:
+                customQueue.append(root.rightChild)
 
 
 def searchNode(rootNode, nodeValue):
@@ -76,8 +76,11 @@ def rightRotate(disbalanceNode):
     newRoot = disbalanceNode.leftChild
     disbalanceNode.leftChild = disbalanceNode.leftChild.rightChild
     newRoot.rightChild = disbalanceNode
-    disbalanceNode.height = 1 + max(getHeight(disbalanceNode.leftChild), getHeight(disbalanceNode.rightChild))
-    newRoot.height = 1 + max(getHeight(newRoot.leftChild), getHeight(newRoot.rightChild))
+    disbalanceNode.height = 1 + \
+        max(getHeight(disbalanceNode.leftChild),
+            getHeight(disbalanceNode.rightChild))
+    newRoot.height = 1 + max(getHeight(newRoot.leftChild),
+                             getHeight(newRoot.rightChild))
     return newRoot
 
 
@@ -85,8 +88,11 @@ def leftRotate(disbalanceNode):
     newRoot = disbalanceNode.rightChild
     disbalanceNode.rightChild = disbalanceNode.rightChild.leftChild
     newRoot.leftChild = disbalanceNode
-    disbalanceNode.height = 1 + max(getHeight(disbalanceNode.leftChild), getHeight(disbalanceNode.rightChild))
-    newRoot.height = 1 + max(getHeight(newRoot.leftChild), getHeight(newRoot.rightChild))
+    disbalanceNode.height = 1 + \
+        max(getHeight(disbalanceNode.leftChild),
+            getHeight(disbalanceNode.rightChild))
+    newRoot.height = 1 + max(getHeight(newRoot.leftChild),
+                             getHeight(newRoot.rightChild))
     return newRoot
 
 
@@ -104,7 +110,8 @@ def insertNode(rootNode, nodeValue):
     else:
         rootNode.rightChild = insertNode(rootNode.rightChild, nodeValue)
 
-    rootNode.height = 1 + max(getHeight(rootNode.leftChild), getHeight(rootNode.rightChild))
+    rootNode.height = 1 + \
+        max(getHeight(rootNode.leftChild), getHeight(rootNode.rightChild))
     balance = getBalance(rootNode)
     if balance > 1 and nodeValue < rootNode.leftChild.data:
         return rightRotate(rootNode)
@@ -170,5 +177,5 @@ newAVL = AVLNode(5)
 newAVL = insertNode(newAVL, 10)
 newAVL = insertNode(newAVL, 15)
 newAVL = insertNode(newAVL, 20)
-deleteAVL(newAVL)
+# deleteAVL(newAVL)
 levelOrderTraversal(newAVL)
